@@ -10,36 +10,31 @@ $dbh = DB::getInstance()->connect();
 
 
 ############### Пример аттрибутов товара################
-$input=array(
-'вес'=>'100 гр',
-'цвет'=>'черный',
-'пол'=>'мужской',
-'возраст'=>'12 лет'
-);
+$input=array('розмір', 'цвет', 'пол', 'возраст');
 
 $language_id=3;
-$attribute_group_id=370;
+$filter_group_id=2;
 
-$attributes=array();
+$filters=array();
 
 
-foreach($input as $key=>$value)
+foreach($input as $value)
 {
-    $result = (new CheckAttribute($key, $language_id))->check($dbh);
+    $result = (new CheckFilter($value, $language_id))->check($dbh);
       
     if(!$result)
     {
-         $new_attr = (new AddAttribute($dbh))->add($attribute_group_id, $language_id, $key);  
-        if($new_attr)
+        $new_filter = (new AddFilter($dbh))->add($filter_group_id, $language_id, $value);  
+        if($new_filter)
         {
-            $attributes[]=array('attribute_id'=>$new_attr, 'text'=>$value);
+            $filters[]=$new_filter;
         }         
     } else {        
-        $attributes[]=array('attribute_id'=>$result, 'text'=>$value);
+        $filters[]=$result;
     }  
 }
 
-print_r($attributes);
+print_r($filters);
 
 
 
